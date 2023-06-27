@@ -1,0 +1,28 @@
+1. Einführung
+    Dokumentationssystem Von Patientenbezogenen daten im Schulsanitätsdienst.
+
+2.
+    Aktuelle situationen nehmen die außmaße an, dass sowohl interne als auch extrene keinen durchblick von material, als auch einsätze haben.
+    Dementsprechend benötigen wir akut ein managment system. Um sowohl datenlecks als auch durch die nicht vorhandene interne Infraschtruktur brauchen wir dies
+    möglichst effizient und zzg am besten offline. 
+
+3.
+    Es sollen Patientenprotokolle möglichst anonym eingetragen werden können, sodas diese aber noch rechtens sind. Zuzüglich sollen Materialsamlungen
+    bestehen und Eventuell verteilbar sein. Nicht zu vergessen sollen diese Daten in einer Datenbank angeletgt und zu anonymisierten statistiken ausgewertet werden können.
+    Dies müsste modular von mehreren Endgeräten in diesen raum aufrufbar sein, sodas eine möglichst Flexibele arbeit möglich ist.
+
+4. 
+    Ansprechpartner hierfür ist Herr Joosten.
+
+5. 
+    - Eingabe und Ausgabe der Protokolle
+    - Login system Für Rechteverwaltung
+    - Weitesgehend Offline
+    - Anbindungen für Plug-ins
+    - UI
+    - Maske für Manuelle eingabe als auch über ein upload was verarbeitet werden kann.
+
+6.
+    Es wird ausdrücklich um eine Zufriedenstellende Benutzbarkeit gebehten. Desweiteren soll es zuverlässig und effizient sein damit Fallakten gut und schnell dokumentiert werden können. Außerdem sollte es für den Nutzer individualisierbar sein und es müssen Konfigurationen vorgenommen werden können.
+
+ 
