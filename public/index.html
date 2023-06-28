@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    </head>
+    <body translate="no">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand mb-0 h1" href="/index.html">
+                    SSD documentation project</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0" id="dropdown">
+                        <div id="more_content">
+                        </div>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                documents
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a class="dropdown-item" href="/#">protocols</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="d-flex" id="log/reg">
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div id=add_user>
+            <main class="text-center p-5 rounded">
+                <form name="register_form" style="max-width: 400px;margin:auto;">
+                    <img src="design/person-square.svg" class="mt-4 mb-4" height="72" alt="user logo">
+                    <h1 class="h3 mb-3 font-weight-normal">registrate a new user!</h1>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Name">
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Email">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+                    <input type="date" id="date" name="date" class="form-control" placeholder="birth date">
+                    <input type="role" id="role" name="role" class="form-control" placeholder="role">
+                    <button type="button" class="btn btn-lg btn-primary btn-block" onclick="send_data()">submit</button>
+                </form>
+                <div id="UFeedback"></div>
+            </main>
+        </div>
+    </body>
+    <script src="scripts/script.js"></script>
+    <script src="scripts/check.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+</html>
