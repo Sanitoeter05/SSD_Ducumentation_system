@@ -1,25 +1,8 @@
-fetch("/get_user_id").then(response => response.json()).then(resul=>{
-    username = resul[0].u_name
-    document.getElementById("log/reg").innerHTML = `<a class="navbar-brand mb-0 h1" href="user.html">${username}</a>`
+fetch("/get_current_user_inf").then(response => response.json()).then(resul=>{
+    let username = resul.u_name
+    if(username){
+        document.getElementById("log/reg").innerHTML = `<a class="navbar-brand mb-0 h1" href="user.html">${username}</a>`
+    } else {
+        document.getElementById("log/reg").innerHTML = `<a class="navbar-brand mb-0 h1" href="login.html">login!</a>`
+    }
 })
-
-
-function send_data(){
-    let u_name = document.register_form.name.value
-    let u_pass = document.register_form.password.value
-    let u_email = document.register_form.email.value
-    let u_role = document.register_form.role.value
-    let u_b_day = document.register_form.date.value
-
-
-    letdata = {'u_name': u_name, 'u_email': u_email, 'u_pass': u_pass, 'u_role': u_role, 'u_b_day': u_b_day}
-    console.log(JSON.stringify(letdata))
-    fetch('/data/user', { method : 'POST',  headers: {'Content-Type': 'application/json'}, body: JSON.stringify(letdata)}).then(function (result) {
-            if (result.status == 201){
-                console.log("succes")
-            }
-            else {
-                console.log("fail")
-            }
-    })
-}

@@ -106,6 +106,7 @@ select count(*) from "user" u
 
 Query to get User name and the corresponding uid
 select u.u_name, u.uid  from  "user" u
+
 */
 
 app.get('/data/user', function (req, res){            /* Fetch Userdata */
@@ -149,51 +150,73 @@ app.get('/data/user', function (req, res){            /* Fetch Userdata */
 Add new userdata to the database
 INSERT INTO public."user" (u_name, u_passwd, "role", birth_day) VALUES($1, $2, $3, $4);
 
-
+Check if a Login try is valid:
+select u.u_name, u.uid  from "user" u where u.u_passwd = :v1 and u.u_email = :V2 
 */
 
-app.post('/data/user', function (req, res){             /* GET User data */
-   let u_name = req.body.u_name
-   let u_pass = req.body.u_pass
-   let u_role = req.body.u_role
-   let u_email = req.body.u_email
-   let u_b_day = req.body.u_b_day
-   
-   u_b_day = new Date(u_b_day)
 
-   console.log(u_pass)
-   if (u_name, u_pass, u_role, u_b_day , u_b_day instanceof Date && !isNaN(u_b_day.valueOf())){ 
-      bcrypt.hash(u_pass, 10, (error, pass_enc) =>{
+/*I18N implementation */
+
+
+app.post('/data/user', function (req, res){             /* GET User data */
+   let u_pass = req.body.u_pass
+   let u_email = req.body.u_email
+   let login = req.body.login
+   if (login){
+      if (u_pass, u_email)
+      pool.query('select u.u_name, u.uid  from "user" u where u.u_passwd = $1 and u.u_email = $2', [u_pass, u_email], (error, resp) =>{
          if (error){
+            res.sendStatus(500)
             console.log(error)
-         } else {
-            pool.query('INSERT INTO public."user" (u_name, u_passwd, "role", birth_day, u_email) VALUES($1, $2, $3, $4, $5);', [u_name, pass_enc, u_role, u_b_day, u_email], (error, resp)=>{
-               if (error){
-                  res.sendStatus(500)
-                  console.log(error);
-               }
-               else {
-                  res.sendStatus(201)
-               };
-            });      
-      }})
+         }
+         else {
+            if(resp.rowCount > 0){
+               req.session.uid = resp.rows[0].uid
+               req.session.name = resp.rows[0].u_name
+            }
+         }
+      })
    }
    else {
-      res.sendStatus(400)
-   };
-});
-
-/*Temp user id cres for testing*/
-app.get('/get_user_id', function (req, res){
-   req.session.uid = 1;
-   pool.query('select u.u_name from "user" u where u.uid = 1;  ', (error, resp)=>{
-      if (error) {
-         console.log(error)
+      let u_name = req.body.u_name
+      let u_role = req.body.u_role
+      let u_b_day = req.body.u_b_day
+      
+      u_b_day = new Date(u_b_day)
+      if (u_name, u_pass, u_role, u_b_day , u_b_day instanceof Date && !isNaN(u_b_day.valueOf())){ 
+         bcrypt.hash(u_pass, 10, (error, pass_enc) =>{
+            if (error){
+               console.log(error)
+            } else {
+               pool.query('INSERT INTO public."user" (u_name, u_passwd, "role", birth_day, u_email) VALUES($1, $2, $3, $4, $5);', [u_name, pass_enc, u_role, u_b_day, u_email], (error, resp)=>{
+                  if (error){
+                     res.sendStatus(500)
+                     console.log(error);
+                  }
+                  else {
+                     res.sendStatus(201)
+                  };
+               });      
+         }})
       }
       else {
-         res.send(resp.rows)
-      }
-   })
+         res.sendStatus(400)
+      };
+   }
+});
+
+
+/*Login form */
+
+
+app.get('/get_current_user_inf', function (req, res){
+   let uid = req.session.uid 
+   let u_name = req.session.u_name
+   if (uid, u_name){
+      res.send({"uid": uid, "u_name":u_name}).status(200)
+   } else {
+      res.send({"uid": "", "u_name":""})
+   }
 })
 
 const server = app.listen(8080, function () {
