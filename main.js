@@ -37,7 +37,6 @@ app.use(
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }));
 
-
 /*Functions: 
     LOG
 
@@ -46,7 +45,6 @@ app.use(body_parser.urlencoded({ extended: true }));
 //function LOG(msg){
 
 //}
-
 
 /* SQL Abfrage für ein komplettes einsatzprotokoll
 select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name
@@ -103,7 +101,6 @@ app.get("/data/protocol", function (req, res) {
     }
 });
 
-
 /*
 app.post("/data/protocol", function (req, res) {
     // POST new data to the database  
@@ -119,20 +116,19 @@ select count(*) from patients p;
 
 */
 
-app.get("/data/patient", function(req, res) {
-    let count = req.query.count
-    if(count){
-        pool.query('select count(*) from patients p;', (error, resp)=>{
-            if (error){
-                res.sendStatus(error)
-                console.log(error)
+app.get("/data/patient", function (req, res) {
+    let count = req.query.count;
+    if (count) {
+        pool.query("select count(*) from patients p;", (error, resp) => {
+            if (error) {
+                res.sendStatus(error);
+                console.log(error);
+            } else {
+                res.send(resp.rows).status(200);
             }
-            else {
-                res.send(resp.rows).status(200)
-            }
-        })
+        });
     }
-})
+});
 
 /*
 Query to get full user information
