@@ -13,6 +13,7 @@ const pool = new Pool({
 });
 const app = express();
 const session = require("express-session");
+const { error } = require("console");
 
 app.use(
     session({
@@ -36,6 +37,17 @@ app.use(
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }));
 
+
+/*Functions: 
+    LOG
+
+*/
+
+//function LOG(msg){
+
+//}
+
+
 /* SQL Abfrage für ein komplettes einsatzprotokoll
 select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name
 from protocols p2
@@ -51,11 +63,9 @@ SQL dür die infos der jewailigen protokolle
 select p."date" datum, p.status status
 from protocols p
 */
-
 app.get("/data/protocol", function (req, res) {
     /* GET Request for protocol data*/ let protocl_id = req.query.pid;
     let protocol_get_info = req.query.pgi;
-    console.log(protocl_id, protocol_get_info);
     if (protocl_id) {
         /* GET a full list of a specific protocol sheet*/
         pool.query(
@@ -79,7 +89,6 @@ app.get("/data/protocol", function (req, res) {
                 } else {
                     res.send(resp.rows).status(200);
                 }
-                console.log("debug2");
             }
         );
     } else {
@@ -90,15 +99,40 @@ app.get("/data/protocol", function (req, res) {
             } else {
                 res.send(resp.rows).status(200);
             }
-            console.log("debug3");
         });
     }
 });
 
+
+/*
 app.post("/data/protocol", function (req, res) {
-    /* POST new data to the database */ 
+    // POST new data to the database  
     let mid = 0;
 });
+*/
+
+/* 
+
+GET count of registert patients 
+
+select count(*) from patients p;
+
+*/
+
+app.get("/data/patient", function(req, res) {
+    let count = req.query.count
+    if(count){
+        pool.query('select count(*) from patients p;', (error, resp)=>{
+            if (error){
+                res.sendStatus(error)
+                console.log(error)
+            }
+            else {
+                res.send(resp.rows).status(200)
+            }
+        })
+    }
+})
 
 /*
 Query to get full user information
