@@ -285,3 +285,8 @@ const server = app.listen(8080, function () {
     console.log(host);
     console.log("Example app listening at http://%s:%s", host, port);
 });
+
+
+/*TODO Add sides for users, patients, and protocols */
+// TODO Add logout button
+// TODO Add user settings with picture upload!
