@@ -1,9 +1,7 @@
 const express = require('express')
-const cookie_parser = require('cookie-parser')
 const body_parser= require('body-parser')
 const bcrypt = require("bcryptjs");
 const path = require("path");
-const { Session } = require('inspector');
 require('dotenv').config();
 const Pool = require("pg").Pool
 const pool = new Pool({
@@ -15,7 +13,6 @@ const pool = new Pool({
 })
 const app = express();
 const session = require('express-session');
-const bodyParser = require('body-parser');
 
 app.use(session({
    secret: process.env.EX_SESS_SEC,
@@ -206,20 +203,19 @@ app.post('/data/user', function (req, res){             /* GET User data */
                      console.log(error);
                   }
                   else {
+                     console.log(resp)
                      res.sendStatus(201)
-                  };
+                  }
                });
          }})
       }
       else {
          res.sendStatus(400)
-      };
+      }
    }
 });
 
-/*Login form */
-
-
+/*get user info*/
 app.get('/get_current_user_inf', function (req, res){
    let uid = req.session.uid
    let u_name = req.session.u_name

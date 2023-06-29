@@ -6,7 +6,7 @@ function send_data(){
     let u_b_day = document.register_form.date.value
 
 
-    letdata = {'u_name': u_name, 'u_email': u_email, 'u_pass': u_pass, 'u_role': u_role, 'u_b_day': u_b_day}
+    let letdata = {'u_name': u_name, 'u_email': u_email, 'u_pass': u_pass, 'u_role': u_role, 'u_b_day': u_b_day}
     console.log(JSON.stringify(letdata))
     fetch('/data/user', { method : 'POST',  headers: {'Content-Type': 'application/json'}, body: JSON.stringify(letdata)}).then(function (result) {
             if (result.status == 201){
