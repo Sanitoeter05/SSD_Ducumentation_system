@@ -39,18 +39,18 @@ app.use(body_parser.urlencoded({extended: true}));
 
 /* SQL Abfrage für ein komplettes einsatzprotokoll
 select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name
-from protocols p2 
-join patients p 
-on p2.pid = p.pid 
-join protocols_user pu 
-on p2.mid = pu.mid 
-join "user" u 
+from protocols p2
+join patients p
+on p2.pid = p.pid
+join protocols_user pu
+on p2.mid = pu.mid
+join "user" u
 on pu.uid = u.uid
 where p2.protocol_id = $1
 
 SQL dür die infos der jewailigen protokolle
 select p."date" datum, p.status status
-from protocols p 
+from protocols p
 */
 
 
@@ -101,7 +101,7 @@ select u.u_name "name", u."role" "rolle", u.birth_day "Geburztag" from "user" u 
 
 
 Count userdata
-select count(*) from "user" u  
+select count(*) from "user" u
 
 
 Query to get User name and the corresponding uid
@@ -120,7 +120,7 @@ app.get('/data/user', function (req, res){            /* Fetch Userdata */
          } else {
             res.send(resp.rows).status(200)
          }
-      }) 
+      })
    } else if  (count) {                              /* count user entrys */
       pool.query('select count(*) from "user" u', (error, resp) =>{
          if (error){
@@ -151,7 +151,7 @@ Add new userdata to the database
 INSERT INTO public."user" (u_name, u_passwd, "role", birth_day) VALUES($1, $2, $3, $4);
 
 Check if a Login try is valid:
-select u.u_name, u.uid  from "user" u where u.u_passwd = :v1 and u.u_email = :V2 
+select u.u_name, u.uid, u.u_passwd  from "user" u where u.u_email = :$1
 */
 
 
@@ -162,28 +162,40 @@ app.post('/data/user', function (req, res){             /* GET User data */
    let u_pass = req.body.u_pass
    let u_email = req.body.u_email
    let login = req.body.login
-   if (login){
+   if (login){                                          /* check if its a Login Request*/
       if (u_pass, u_email)
-      pool.query('select u.u_name, u.uid  from "user" u where u.u_passwd = $1 and u.u_email = $2', [u_pass, u_email], (error, resp) =>{
+      pool.query('select u.u_name, u.uid, u.u_passwd  from "user" u where u.u_email = $1;', [u_email], (error, resp) =>{
          if (error){
             res.sendStatus(500)
             console.log(error)
          }
          else {
-            if(resp.rowCount > 0){
-               req.session.uid = resp.rows[0].uid
-               req.session.name = resp.rows[0].u_name
+            let u_passwd_enc = resp.rows[0].u_passwd
+            bcrypt.compare(u_pass, u_passwd_enc, (err, respo)=>{     /*Check if the passowrd is correct */
+               if (err){
+                  resp.sendStatus(500)
+                  console.log(err)
+               }
+               else if (respo){
+                  req.session.uid = resp.rows[0].uid
+                  req.session.u_name = resp.rows[0].u_name
+                  res.send({"uid": resp.rows[0].uid, "u_name": resp.rows[0].u_name}).status(200) 
+               }
+               else {
+                  res.sendStatus(401)
+               } 
+            })
             }
          }
-      })
+      )
    }
    else {
       let u_name = req.body.u_name
       let u_role = req.body.u_role
       let u_b_day = req.body.u_b_day
-      
+
       u_b_day = new Date(u_b_day)
-      if (u_name, u_pass, u_role, u_b_day , u_b_day instanceof Date && !isNaN(u_b_day.valueOf())){ 
+      if (u_name, u_pass, u_role, u_b_day , u_b_day instanceof Date && !isNaN(u_b_day.valueOf())){
          bcrypt.hash(u_pass, 10, (error, pass_enc) =>{
             if (error){
                console.log(error)
@@ -196,7 +208,7 @@ app.post('/data/user', function (req, res){             /* GET User data */
                   else {
                      res.sendStatus(201)
                   };
-               });      
+               });
          }})
       }
       else {
@@ -205,12 +217,11 @@ app.post('/data/user', function (req, res){             /* GET User data */
    }
 });
 
-
 /*Login form */
 
 
 app.get('/get_current_user_inf', function (req, res){
-   let uid = req.session.uid 
+   let uid = req.session.uid
    let u_name = req.session.u_name
    if (uid, u_name){
       res.send({"uid": uid, "u_name":u_name}).status(200)

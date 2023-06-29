@@ -31,9 +31,21 @@
         </nav>
         <div id=add_user>
             <main class="text-center p-5 rounded">
+                <form name="register_form" style="max-width: 400px;margin:auto;">
+                    <img src="design/icons/person-square.svg" class="mt-4 mb-4" height="72" alt="user logo">
+                    <h1 class="h3 mb-3 font-weight-normal">registrate a new user!</h1>
+                    <input type="text" id="name" name="name" class="form-control mb-1" placeholder="Name">
+                    <input type="email" id="email" name="email" class="form-control mb-1" placeholder="Email">
+                    <input type="password" id="password" name="password" class="form-control mb-1" placeholder="Password">
+                    <input type="date" id="date" name="date" class="form-control mb-1" placeholder="birth date">
+                    <input type="role" id="role" name="role" class="form-control mb-1" placeholder="role">
+                    <button type="button" class="btn btn-lg btn-primary btn-block" onclick="send_data()">submit</button>
+                </form>
+                <div id="UFeedback"></div>
             </main>
         </div>
     </body>
+    <script src="scripts/register.js"></script>
     <script src="scripts/check.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
