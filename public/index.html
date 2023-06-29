@@ -55,29 +55,30 @@
             <main class="text-center p-5">
                 <div id="cards" class="d-flex justify-content-evenly">
                     <div class="card mt-5" style="width: 13rem">
-                        <div class="md-1"></div>
-                        <div class="container align-self-center">
+                        <div class="container m-1" id="sanis-image-b">
                             <img
+                                id="sanis-image"
                                 class="card-img-top img-fluid"
                                 src="design/icons/heart-pulse-fill.svg"
                                 alt="Card image cap"
                             />
                         </div>
-                        <div class="card-body">
+                        <div class="card-body bg-light">
                             <p class="card-text">Current registert Sanis:</p>
                             <p class="card-text" id="Sanis"></p>
                         </div>
                     </div>
                     <div class="card mt-5" style="width: 13rem">
                         <div class="md-1"></div>
-                        <div class="container align-self-center">
+                        <div class="container m-1">
                             <img
+                                id="protocols-image"
                                 class="card-img-top img-fluid"
                                 src="design/icons/file-earmark-medical.svg"
                                 alt="Card image cap"
                             />
                         </div>
-                        <div class="card-body">
+                        <div class="card-body bg-light">
                             <p class="card-text">
                                 Current registret protocols:
                             </p>
@@ -86,14 +87,15 @@
                     </div>
                     <div class="card mt-5" style="width: 13rem">
                         <div class="md-1"></div>
-                        <div class="container align-self-center">
+                        <div class="container m-1">
                             <img
+                                id="patients-image"
                                 class="card-img-top img-fluid"
                                 src="design/icons/person.svg"
                                 alt="Card image cap"
                             />
                         </div>
-                        <div class="card-body">
+                        <div class="card-body bg-light">
                             <p class="card-text">registert Patients:</p>
                             <p class="card-text" id="patients"></p>
                         </div>
@@ -102,7 +104,6 @@
             </main>
         </div>
     </body>
-    <script src="scripts/check.js"></script>
     <script src="scripts/script.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
