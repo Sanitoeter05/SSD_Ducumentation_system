@@ -37,14 +37,14 @@ app.use(
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }));
 
-/*Functions: 
-    LOG
+app.get("/sanis.html", function(req, res){
+    if (req.session.uid){
+        res.sendFile(__dirname + "/secureFolder/sanis.html")
+    } else {
+        res.sendStatus(403)
+    }
+})
 
-*/
-
-//function LOG(msg){
-
-//}
 
 /* SQL Abfrage für ein komplettes einsatzprotokoll
 select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name
@@ -133,15 +133,15 @@ app.get("/data/patient", function (req, res) {
 /*
 Query to get full user information
 
-select u.u_name "name", u."role" "rolle", u.birth_day "Geburztag" from "user" u where uid = $1
+select u.u_name , u."role" , u.birth_day , u.u_email from "user" u where uid = $1;
 
 
 Count userdata
-select count(*) from "user" u
+select count(*) from "user" u;
 
 
 Query to get User name and the corresponding uid
-select u.u_name, u.uid  from  "user" u
+select u.u_name, u.uid  from  "user" u;
 
 */
 
@@ -151,7 +151,7 @@ app.get("/data/user", function (req, res) {
     if (uid) {
         /* Fetch Full userdata for managment */
         pool.query(
-            'select u.u_name "name", u."role" "rolle", u.birth_day "Geburztag" from "user" u where uid = $1',
+            'select u.u_name , u."role" , u.birth_day , u.u_email from "user" u where uid = $1',
             [uid],
             (error, resp) => {
                 if (error) {
@@ -253,7 +253,11 @@ app.post("/data/user", function (req, res) {
                         [u_name, pass_enc, u_role, u_b_day, u_email],
                         (error, resp) => {
                             if (error) {
-                                res.sendStatus(500);
+                                if (error.code === "23505") {
+                                    res.sendStatus(409);
+                                } else {
+                                    res.sendStatus(500);
+                                }
                                 console.log(error);
                             } else {
                                 console.log(resp);
@@ -286,7 +290,7 @@ const server = app.listen(8080, function () {
     console.log("Example app listening at http://%s:%s", host, port);
 });
 
-
 /*TODO Add sides for users, patients, and protocols */
 // TODO Add logout button
 // TODO Add user settings with picture upload!
+// TODO Add PASSORT VERGESSEN

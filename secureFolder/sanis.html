@@ -65,58 +65,58 @@
         </nav>
         <div id="add_user">
             <main class="text-center p-5">
-                <div id="cards" class="d-flex justify-content-evenly">
-                    <div class="card mt-5" style="width: 13rem">
-                        <div class="container m-1" id="sanis-image-b">
-                            <img
-                                id="sanis-image"
-                                class="card-img-top img-fluid"
-                                src="design/icons/heart-pulse-fill.svg"
-                                alt="Card image cap"
-                            />
-                        </div>
-                        <div class="card-body bg-light">
-                            <p class="card-text">Current registert Sanis:</p>
-                            <p class="card-text" id="Sanis"></p>
-                        </div>
-                    </div>
-                    <div class="card mt-5" style="width: 13rem">
-                        <div class="md-1"></div>
-                        <div class="container m-1" id="protocol-image-b">
-                            <img
-                                id="protocols-image"
-                                class="card-img-top img-fluid"
-                                src="design/icons/file-earmark-medical.svg"
-                                alt="Card image cap"
-                            />
-                        </div>
-                        <div class="card-body bg-light">
-                            <p class="card-text">
-                                Current registret protocols:
-                            </p>
-                            <p class="card-text" id="protocols"></p>
-                        </div>
-                    </div>
-                    <div class="card mt-5" style="width: 13rem">
-                        <div class="md-1"></div>
-                        <div class="container m-1" id="patient-image-b">
-                            <img
-                                id="patients-image"
-                                class="card-img-top img-fluid"
-                                src="design/icons/person.svg"
-                                alt="Card image cap"
-                            />
-                        </div>
-                        <div class="card-body bg-light">
-                            <p class="card-text">registert Patients:</p>
-                            <p class="card-text" id="patients"></p>
-                        </div>
-                    </div>
-                </div>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">name</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="t_body"></tbody>
+                </table>
             </main>
         </div>
+        <!-- The Modal -->
+            <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modal_head"></h4>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            onclick="cleanup()"
+                        ></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="modal_body">
+                        <div >
+                            <p class="text-decoration-underline">Brithday: </p>
+                            <p id="birthday"></p>
+                        </div>
+                        <div>
+                            <p class="text-decoration-underline">Email adress: </p>
+                            <p id="email"></p>
+                        </div>
+                        <div >
+                            <p class="text-decoration-underline">Role: </p>
+                            <p id="role"></p>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
-    <script src="scripts/script.js"></script>
+    <script src="scripts/check.js"></script>
+    <script src="scripts/sanis.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

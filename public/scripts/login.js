@@ -9,19 +9,29 @@ function login() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
-        })
-            .then((response) => response.json())
-            .then((result) => {
-                let username = result.u_name;
-                if (username) {
-                    console.log(result);
-                    console.log(result.u_name);
-                    document.getElementById(
-                        "log/reg"
-                    ).innerHTML = `<a class="navbar-brand mb-0 h1" href="user.html">${username}</a>`;
-                } else {
-                    null;
-                }
-            });
+        }).then(function (result) {
+            if (result.status === 200) {
+                document.getElementById("UFeedback").innerHTML =
+                    '<div class="alert alert-success"><strong>Login Successful!</strong></div>';
+                u_email.value = "";
+                u_pass.value = "";
+                fetch("/get_current_user_inf")
+                    .then((response) => response.json())
+                    .then((results) => {
+                        let username = results.u_name;
+                        document.getElementById(
+                            "log/reg"
+                        ).innerHTML = `<a class="navbar-brand mb-0 h1" href="user.html">${username}</a>`;
+                    });
+            } else if (result.status === 401) {
+                document.getElementById("UFeedback").innerHTML =
+                    '<div class="alert alert-danger"><strong>Login failed!</strong></div>';
+                u_email.value = "";
+                u_pass.value = "";
+            } else {
+                document.getElementById("UFeedback").innerHTML =
+                    '<div class="alert alert-warning"><strong>Internal Server error!</strong></div>';
+            }
+        });
     }
 }
