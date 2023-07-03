@@ -60,6 +60,15 @@
                         </li>
                     </ul>
                     <div class="d-flex" id="log/reg"></div>
+                    <div class="d-flex">
+                        <button
+                            class="btn btn-success collapse hide"
+                            id="logout_btn"
+                            onclick="logout()"
+                        >
+                            logout
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -75,10 +84,19 @@
                     </thead>
                     <tbody id="t_body"></tbody>
                 </table>
+                <div id="btn_div"></div>
             </main>
         </div>
         <!-- The Modal -->
-            <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div
+            class="modal fade"
+            id="myModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+        >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <!-- Modal Header -->
@@ -95,23 +113,22 @@
                     <!-- Modal body -->
                     <div class="modal-body" id="modal_body">
                         <div>
-                            <p class="text-decoration-underline">Email adress: </p>
+                            <p class="text-decoration-underline">
+                                Email adress:
+                            </p>
                             <p id="email"></p>
                         </div>
-                        <div >
-                            <p class="text-decoration-underline">Role: </p>
+                        <div>
+                            <p class="text-decoration-underline">Role:</p>
                             <p id="role"></p>
                         </div>
                     </div>
-
                     <!-- Modal footer -->
-                    <div class="modal-footer">
-                    </div>
+                    <div class="modal-footer"></div>
                 </div>
             </div>
         </div>
     </body>
-    <script src="scripts/check.js"></script>
     <script src="scripts/sanis.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

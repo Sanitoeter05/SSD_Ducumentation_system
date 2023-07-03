@@ -1,3 +1,44 @@
+fetch("/get_current_user_inf")
+    .then((response) => response.json())
+    .then((resul) => {
+        let username = resul.u_name;
+        let u_role = resul.u_role
+        let is_admin = false 
+        u_role = u_role.split(", ")
+
+        u_role.forEach(element => {
+            if (element === "Admin"){
+                is_admin = true
+            }
+        });
+        if (is_admin){
+            let btn_div = document.getElementById("btn_div")
+            let btn = document.createElement("button")
+            let btn_text = "create new user!"
+            let btn_textnode = document.createTextNode(btn_text)
+
+            btn.setAttribute("class", "btn btn-dark")
+            btn.setAttribute("onclick", "redirect()")
+
+            btn.appendChild(btn_textnode)
+            btn_div.appendChild(btn)
+        }
+        if (username) {
+            document.getElementById(
+                "log/reg"
+            ).innerHTML = `<a class="navbar-brand mb-0 h1" href="user.html">${username}</a>`
+            let btn = document.getElementById("logout_btn");
+            btn.setAttribute("class", "btn btn-success collapse show");
+        } else {
+            document.getElementById(
+                "log/reg"
+            ).innerHTML = `<a class="navbar-brand mb-0 h1" href="login.html">login!</a>`;
+        }
+    });
+
+function redirect(){
+    window.location = "/register.html"
+}
 
 fetch("/data/user?get_user_inf=1").then(results => results.json()).then(reslult =>{
     let counter = 1
@@ -61,6 +102,16 @@ function get_inf(uid){
 
     })
 }
+function logout() {
+    fetch("/logout").then((response) => {
+        let btn = document.getElementById("logout_btn");
+        if (response.status === 200) {
+            btn.setAttribute("class", "btn btn-success collapse hide");
+            window.location = "/index.html";
+        }
+    });
+}
+
 function cleanup(){
     let modal_head = document.getElementById("modal_head")
     let modal_body_email = document.getElementById("email")

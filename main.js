@@ -64,9 +64,7 @@ app.get("/register.html", function (req, res) {
     if ((req.session.role, req.session.uid)) {
         let veryfied = false;
         let roles = req.session.role;
-        console.log(roles);
         let roles_array = roles.split(", ");
-        console.log(roles_array);
         roles_array.forEach((element) => {
             console.log(element);
             if (element === "Admin") {
@@ -219,6 +217,10 @@ app.get("/data/count/patient", function (req, res) {
         }
     });
 });
+
+/*query for adding new patients 
+
+*/
 
 /*
 Query to get full user information
@@ -402,12 +404,38 @@ app.post("/data/user", function (req, res) {
 app.get("/get_current_user_inf", function (req, res) {
     let uid = req.session.uid;
     let u_name = req.session.u_name;
-    if ((uid, u_name)) {
-        res.send({ uid: uid, u_name: u_name }).status(200);
+    let u_role = req.session.role;
+    if ((uid, u_name, u_role)) {
+        res.send({ uid: uid, u_name: u_name, u_role: u_role }).status(200);
     } else {
         res.send({ uid: "", u_name: "" });
     }
 });
+
+/*logut function */
+app.get("/logout", function (req, res) {
+    req.session.uid = "";
+    req.session.u_name = "";
+    req.session.role = "";
+    res.sendStatus(200);
+});
+
+app.get("/data/roles", function (req, res) {
+    let uid = req.session.uid;
+    if (uid) {
+        pool.query('select * from "role" r; ', (err, resp) => {
+            if (err) {
+                res.sendStatus(500);
+                console.log(err);
+            } else {
+                res.send(resp.rows).status(200);
+            }
+        });
+    } else {
+        res.sendStatus(401);
+    }
+});
+
 const server = app.listen(8080, function () {
     let host = server.address().address;
     let port = server.address().port;
@@ -415,10 +443,7 @@ const server = app.listen(8080, function () {
     console.log("Example app listening at http://%s:%s", host, port);
 });
 
-//TODO Redirect after login (Done)
-//TODO Permission requests (Done)
 //TODO Add protocol + add patients interface
-// TODO Add logout button
 // TODO Add user settings with picture upload!
 //TODO Delete Register and make it viewable only for Admins (over the user tab)!
 // TODO Change klasse from patients to be undynamic for the protocols
