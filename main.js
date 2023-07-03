@@ -36,21 +36,51 @@ app.use(
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }));
 
-app.get("/sanis.html", function(req, res){
-    if (req.session.uid){
-        res.sendFile(__dirname + "/secureFolder/sanis.html")
+app.get("/sanis.html", function (req, res) {
+    if (req.session.uid) {
+        res.sendFile(__dirname + "/secureFolder/sanis.html");
     } else {
-        res.sendStatus(403)
+        res.sendStatus(403);
     }
-})
+});
 
-app.get("/patients.html", function(req, res){
-    if (req.session.uid){
-        res.sendFile(__dirname + "/secureFolder/patients.html")
+app.get("/patients.html", function (req, res) {
+    if (req.session.uid) {
+        res.sendFile(__dirname + "/secureFolder/patients.html");
     } else {
-        res.sendStatus(403)
+        res.sendStatus(403);
     }
-})
+});
+
+app.get("/login.html", function (req, res) {
+    if (req.session.uid) {
+        res.redirect("/index.html");
+    } else {
+        res.sendFile(__dirname + "/secureFolder/login.html");
+    }
+});
+
+app.get("/register.html", function (req, res) {
+    if ((req.session.role, req.session.uid)) {
+        let veryfied = false;
+        let roles = req.session.role;
+        console.log(roles);
+        let roles_array = roles.split(", ");
+        console.log(roles_array);
+        roles_array.forEach((element) => {
+            console.log(element);
+            if (element === "Admin") {
+                res.sendFile(__dirname + "/secureFolder/register.html");
+                veryfied = true;
+            }
+        });
+        if (!veryfied) {
+            res.sendStatus(403);
+        }
+    } else {
+        res.sendStatus(403);
+    }
+});
 
 /* SQL Abfrage für ein komplettes einsatzprotokoll
 select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name
@@ -68,43 +98,55 @@ select p."date" datum, p.status status
 from protocols p
 */
 app.get("/data/protocol", function (req, res) {
-    /* GET Request for protocol data*/ let protocl_id = req.query.pid;
+    /* GET Request for protocol data*/
+    let protocl_id = req.query.pid;
     let protocol_get_info = req.query.pgi;
-    if (protocl_id) {
-        /* GET a full list of a specific protocol sheet*/
-        pool.query(
-            `select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name from protocols p2 join patients p on p2.pid = p.pid join protocols_user pu on p2.mid = pu.mid join "user" u on pu.uid = u.uid where p2.protocol_id = $1`,
-            [protocl_id],
-            (error, results) => {
-                if (error) {
-                    console.log(error);
+    let uid = req.session.uid;
+
+    if (uid) {
+        if (protocl_id) {
+            /* GET a full list of a specific protocol sheet*/
+            pool.query(
+                `select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name from protocols p2 join patients p on p2.pid = p.pid join protocols_user pu on p2.mid = pu.mid join "user" u on pu.uid = u.uid where p2.protocol_id = $1`,
+                [protocl_id],
+                (error, results) => {
+                    if (error) {
+                        console.log(error);
+                    }
+                    res.status(200).json(results.rows);
+                    console.log(results.rows);
                 }
-                res.status(200).json(results.rows);
-                console.log(results.rows);
-            }
-        );
-    } else if (protocol_get_info) {
-        /* GET Basic protocol info for all protocols */
-        pool.query(
-            'select p."date" datum, p.status status from protocols p',
-            (error, resp) => {
-                if (error) {
-                    res.sendStatus(500);
-                } else {
-                    res.send(resp.rows).status(200);
+            );
+        } else if (protocol_get_info) {
+            /* GET Basic protocol info for all protocols */
+            pool.query(
+                'select p."date" datum, p.status status from protocols p',
+                (error, resp) => {
+                    if (error) {
+                        res.sendStatus(500);
+                    } else {
+                        res.send(resp.rows).status(200);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            res.sendStatus(400);
+        }
     } else {
-        pool.query("select count(*) from protocols p", (error, resp) => {
-            /* GET Protocol count */
-            if (error) {
-                res.sendStatus(500);
-            } else {
-                res.send(resp.rows).status(200);
-            }
-        });
+        res.sendStatus(400);
     }
+});
+
+app.get("/data/count/protocols", function (req, res) {
+    /* count user entrys */
+    pool.query("select count(*) from protocols p", (error, resp) => {
+        if (error) {
+            res.sendStatus(500);
+            console.log(error);
+        } else {
+            res.send(resp.rows).status(200);
+        }
+    });
 });
 
 /*
@@ -129,37 +171,53 @@ select p."name" , p."class" ,p.pid  from patients p;
 */
 
 app.get("/data/patient", function (req, res) {
-    let count = req.query.count;
-    let pid = req.query.pid
-    if (count) {
-        pool.query("select count(*) from patients p;", (error, resp) => {
-            if (error) {
-                res.sendStatus(500);
-                console.log(error);
-            } else {
-                res.send(resp.rows).status(200);
-            }
-        });
-    }else if (pid){
-        pool.query('select p."name" , p."class" ,p.pre_diseases  from patients p where pid = $1;',[pid], (error, resp) => {
-            if (error){
-                res.sendStatus (500)
-                console.log(error)
-            } else {
-                res.send(resp.rows).status(200)
-            }
-        })
-    }else{
-        pool.query('select p."name" , p."class" ,p.pid  from patients p;', (err, resp) =>{
-            if (err){
-                res.sendStatus(500)
-                console.log(err)
-            }
-            else {
-                res.send(resp.rows).status(200)
-            }
-        })
+    let pid = req.query.pid;
+    let pat_get_inf = req.query.pat_get_inf;
+    let uid = req.session.uid;
+    if (uid) {
+        if (pid) {
+            pool.query(
+                'select p."name" , p."class" ,p.pre_diseases  from patients p where pid = $1;',
+                [pid],
+                (error, resp) => {
+                    if (error) {
+                        res.sendStatus(500);
+                        console.log(error);
+                    } else {
+                        res.send(resp.rows).status(200);
+                    }
+                }
+            );
+        } else if (pat_get_inf) {
+            pool.query(
+                'select p."name" , p."class" ,p.pid  from patients p;',
+                (err, resp) => {
+                    if (err) {
+                        res.sendStatus(500);
+                        console.log(err);
+                    } else {
+                        res.send(resp.rows).status(200);
+                    }
+                }
+            );
+        } else {
+            res.sendStatus(400);
+        }
+    } else {
+        res.sendStatus(400);
     }
+});
+
+app.get("/data/count/patient", function (req, res) {
+    /* count user entrys */
+    pool.query("select count(*) from patients p", (error, resp) => {
+        if (error) {
+            res.sendStatus(500);
+            console.log(error);
+        } else {
+            res.send(resp.rows).status(200);
+        }
+    });
 });
 
 /*
@@ -176,80 +234,104 @@ select u.u_name, u.uid  from  "user" u;
 */
 
 app.get("/data/user", function (req, res) {
-    /* Fetch Userdata */ let uid = req.query.uid;
-    let count = req.query.count;
-    if (uid) {
-        /* Fetch Full userdata for managment */
-        pool.query(
-            `select u.u_name, u.u_email, u.uid, STRING_AGG(r."role", ', ') from "user" u join role_user ru on u.role_id = ru.role_map_id join "role" r on ru.role_id = r.role_id where u.uid = $1 group by uid ;`,
-            [uid],
-            (error, resp) => {
-                if (error) {
-                    res.sendStatus(500);
-                    console.log(error);
-                } else {
-                    if (resp.rowCount > 0){
-                        let data = resp.rows
-                        let base = []
-                        data.forEach(element => {
-                            base = Object.assign({}, base, element)
-                        });
-                        res.send(base).status(200)
+    /* Fetch Userdata */
+    let uid = req.query.uid;
+    let uuid = req.session.uid;
+    let get_user_inf = req.query.get_user_inf;
+
+    if (uuid) {
+        if (uid) {
+            /* Fetch Full userdata for managment */
+            pool.query(
+                `select u.u_name, u.u_email, u.uid, STRING_AGG(r."role", ', ') from "user" u join role_user ru on u.role_id = ru.role_map_id join "role" r on ru.role_id = r.role_id where u.uid = $1 group by uid ;`,
+                [uid],
+                (error, resp) => {
+                    if (error) {
+                        res.sendStatus(500);
+                        console.log(error);
+                    } else {
+                        if (resp.rowCount > 0) {
+                            let data = resp.rows;
+                            let base = [];
+                            data.forEach((element) => {
+                                base = Object.assign({}, base, element);
+                            });
+                            res.send(base).status(200);
+                        } else {
+                            res.send(resp.rows).status(200);
+                        }
                     }
-                    else {
+                }
+            );
+        } else if (get_user_inf) {
+            /*Get user information for user with uid*/
+            pool.query(
+                'select u.u_name, u.uid  from  "user" u',
+                (error, resp) => {
+                    if (error) {
+                        res.sendStatus(500);
+                        console.log(error);
+                    } else {
                         res.send(resp.rows).status(200);
                     }
                 }
-            }
-        );
-    } else if (count) {
-        /* count user entrys */
-        pool.query('select count(*) from "user" u', (error, resp) => {
-            if (error) {
-                res.sendStatus(500);
-                console.log(error);
-            } else {
-                res.send(resp.rows).status(200);
-            }
-        });
+            );
+        } else {
+            res.sendStatus(404);
+        }
     } else {
-        /*Get user information for protocols with uid*/
-        pool.query('select u.u_name, u.uid  from  "user" u', (error, resp) => {
-            if (error) {
-                res.sendStatus(500);
-                console.log(error);
-            } else {
-                res.send(resp.rows).status(200);
-            }
-        });
+        res.sendStatus(400);
     }
 });
 
+app.get("/data/count/user", function (req, res) {
+    /* count user entrys */
+    pool.query('select count(*) from "user" u', (error, resp) => {
+        if (error) {
+            res.sendStatus(500);
+            console.log(error);
+        } else {
+            res.send(resp.rows).status(200);
+        }
+    });
+});
 /*
 
 Add new userdata to the database
 INSERT INTO public."user" (u_name, u_passwd, "role", birth_day) VALUES($1, $2, $3, $4);
 
 Check if a Login try is valid:
-select u.u_name, u.uid, u.u_passwd  from "user" u where u.u_email = :$1
+select u.u_name, u.uid, u.u_passwd, string_agg(r."role", ', ')  from "user" u join role_user ru on u.role_id = ru.role_map_id join "role" r on ru.role_id = r.role_id where u.u_email = $1 GROUP by u.uid ;
 */
 
 /*I18N implementation */
 
 app.post("/data/user", function (req, res) {
-    /* GET User data */ let u_pass = req.body.u_pass;
+    /* GET User data */
+    let u_pass = req.body.u_pass;
     let u_email = req.body.u_email;
     let login = req.body.login;
+    let role = req.session.role;
+    let is_admin = false;
+    if (role) {
+        role = role.split(", ");
+        role.forEach((element) => {
+            if (element === "Admin") {
+                is_admin = true;
+            }
+        });
+    }
     if (login) {
         /* check if its a Login Request*/
         if ((u_pass, u_email))
             pool.query(
-                'select u.u_name, u.uid, u.u_passwd  from "user" u where u.u_email = $1;',
+                `select u.u_name, u.uid, u.u_passwd, string_agg(r."role", ', ')  from "user" u join role_user ru on u.role_id = ru.role_map_id join "role" r on ru.role_id = r.role_id where u.u_email = $1 GROUP by u.uid ;`,
                 [u_email],
                 (error, resp) => {
                     if (error) {
                         res.sendStatus(500);
                         console.log(error);
+                        console.log("HELP ME ");
                     } else {
                         let u_passwd_enc = resp.rows[0].u_passwd;
                         bcrypt.compare(u_pass, u_passwd_enc, (err, respo) => {
@@ -260,6 +342,7 @@ app.post("/data/user", function (req, res) {
                             } else if (respo) {
                                 req.session.uid = resp.rows[0].uid;
                                 req.session.u_name = resp.rows[0].u_name;
+                                req.session.role = resp.rows[0].string_agg;
                                 res.send({
                                     uid: resp.rows[0].uid,
                                     u_name: resp.rows[0].u_name,
@@ -271,7 +354,7 @@ app.post("/data/user", function (req, res) {
                     }
                 }
             );
-    } else {
+    } else if (is_admin) {
         let u_name = req.body.u_name;
         let u_role = req.body.u_role;
         let u_b_day = req.body.u_b_day;
@@ -310,6 +393,8 @@ app.post("/data/user", function (req, res) {
         } else {
             res.sendStatus(400);
         }
+    } else {
+        res.sendStatus(400);
     }
 });
 
@@ -330,8 +415,12 @@ const server = app.listen(8080, function () {
     console.log("Example app listening at http://%s:%s", host, port);
 });
 
-/*TODO Add sides for users (DONE), patients, and protocols */
+//TODO Redirect after login (Done)
+//TODO Permission requests (Done)
+//TODO Add protocol + add patients interface
 // TODO Add logout button
 // TODO Add user settings with picture upload!
-// TODO Add PASSORT VERGESSEN
 //TODO Delete Register and make it viewable only for Admins (over the user tab)!
+// TODO Change klasse from patients to be undynamic for the protocols
+
+/*TODO Add sides for users (DONE), patients (DONE), and protocols */

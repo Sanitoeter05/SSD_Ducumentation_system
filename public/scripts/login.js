@@ -23,6 +23,7 @@ function login() {
                             "log/reg"
                         ).innerHTML = `<a class="navbar-brand mb-0 h1" href="user.html">${username}</a>`;
                     });
+                window.location = "/index.html"
             } else if (result.status === 401) {
                 document.getElementById("UFeedback").innerHTML =
                     '<div class="alert alert-danger"><strong>Login failed!</strong></div>';

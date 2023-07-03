@@ -1,5 +1,5 @@
 
-fetch("/data/user").then(results => results.json()).then(reslult =>{
+fetch("/data/user?get_user_inf=1").then(results => results.json()).then(reslult =>{
     let counter = 1
     let t_body = document.getElementById("t_body")
     reslult.forEach(entry => {
