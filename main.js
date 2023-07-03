@@ -133,9 +133,7 @@ app.get("/data/patient", function (req, res) {
 /*
 Query to get full user information
 
-select u.u_name , u."role" , u.birth_day , u.u_email from "user" u where uid = $1;
-
-
+select u.u_name, u.u_email, u.uid, STRING_AGG(r."role", ', ') from "user" u join role_user ru on u.role_id = ru.role_map_id join "role" r on ru.role_id = r.role_id where u.uid = $1 group by uid ; 
 Count userdata
 select count(*) from "user" u;
 
@@ -151,14 +149,24 @@ app.get("/data/user", function (req, res) {
     if (uid) {
         /* Fetch Full userdata for managment */
         pool.query(
-            'select u.u_name , u."role" , u.birth_day , u.u_email from "user" u where uid = $1',
+            `select u.u_name, u.u_email, u.uid, STRING_AGG(r."role", ', ') from "user" u join role_user ru on u.role_id = ru.role_map_id join "role" r on ru.role_id = r.role_id where u.uid = $1 group by uid ;`,
             [uid],
             (error, resp) => {
                 if (error) {
                     res.sendStatus(500);
                     console.log(error);
                 } else {
-                    res.send(resp.rows).status(200);
+                    if (resp.rowCount > 0){
+                        let data = resp.rows
+                        let base = []
+                        data.forEach(element => {
+                            base = Object.assign({}, base, element)
+                        });
+                        res.send(base).status(200)
+                    }
+                    else {
+                        res.send(resp.rows).status(200);
+                    }
                 }
             }
         );
@@ -290,7 +298,8 @@ const server = app.listen(8080, function () {
     console.log("Example app listening at http://%s:%s", host, port);
 });
 
-/*TODO Add sides for users, patients, and protocols */
+/*TODO Add sides for users (DONE), patients, and protocols */
 // TODO Add logout button
 // TODO Add user settings with picture upload!
 // TODO Add PASSORT VERGESSEN
+//TODO Delete Register and make it viewable only for Admins!
