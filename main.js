@@ -13,7 +13,6 @@ const pool = new Pool({
 });
 const app = express();
 const session = require("express-session");
-const { error } = require("console");
 
 app.use(
     session({
@@ -45,6 +44,13 @@ app.get("/sanis.html", function(req, res){
     }
 })
 
+app.get("/patients.html", function(req, res){
+    if (req.session.uid){
+        res.sendFile(__dirname + "/secureFolder/patients.html")
+    } else {
+        res.sendStatus(403)
+    }
+})
 
 /* SQL Abfrage für ein komplettes einsatzprotokoll
 select p2."date" Datum, p2.e_start Einsatzbegin, p2.e_end Einsatzende, p2."desc" Beschreibun, p2.status Status, p2.exit_state Endverfahren, p."name" Patientenname, p."class", p.bith_date Patientengeburztag, p.pre_diseases Patientenvorerkrankun, u.u_name Sani_name
@@ -114,19 +120,45 @@ GET count of registert patients
 
 select count(*) from patients p;
 
+GET patient info
+select p."name" , p."class" ,p.pre_diseases  from patients p where pid = $1;
+
+GET Gerneral patient info
+select p."name" , p."class" ,p.pid  from patients p;  
+
 */
 
 app.get("/data/patient", function (req, res) {
     let count = req.query.count;
+    let pid = req.query.pid
     if (count) {
         pool.query("select count(*) from patients p;", (error, resp) => {
             if (error) {
-                res.sendStatus(error);
+                res.sendStatus(500);
                 console.log(error);
             } else {
                 res.send(resp.rows).status(200);
             }
         });
+    }else if (pid){
+        pool.query('select p."name" , p."class" ,p.pre_diseases  from patients p where pid = $1;',[pid], (error, resp) => {
+            if (error){
+                res.sendStatus (500)
+                console.log(error)
+            } else {
+                res.send(resp.rows).status(200)
+            }
+        })
+    }else{
+        pool.query('select p."name" , p."class" ,p.pid  from patients p;', (err, resp) =>{
+            if (err){
+                res.sendStatus(500)
+                console.log(err)
+            }
+            else {
+                res.send(resp.rows).status(200)
+            }
+        })
     }
 });
 
@@ -302,4 +334,4 @@ const server = app.listen(8080, function () {
 // TODO Add logout button
 // TODO Add user settings with picture upload!
 // TODO Add PASSORT VERGESSEN
-//TODO Delete Register and make it viewable only for Admins!
+//TODO Delete Register and make it viewable only for Admins (over the user tab)!

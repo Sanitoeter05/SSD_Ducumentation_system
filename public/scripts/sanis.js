@@ -1,6 +1,6 @@
 
 fetch("/data/user").then(results => results.json()).then(reslult =>{
-    let counter = 0
+    let counter = 1
     let t_body = document.getElementById("t_body")
     reslult.forEach(entry => {
         let tr = document.createElement("tr")        
