@@ -51,6 +51,21 @@ app.get("/patients.html", function (req, res) {
         res.sendStatus(403);
     }
 });
+app.get("/user.html", function (req, res) {
+    if (req.session.uid) {
+        res.sendFile(__dirname + "/secureFolder/user.html");
+    } else {
+        res.sendStatus(401);
+    }
+});
+
+app.get("/protocol.html", function (req, res) {
+    if (req.session.uid) {
+        res.sendFile(__dirname + "/secureFolder/protocol.html");
+    } else {
+        res.sendStatus(401);
+    }
+});
 
 app.get("/login.html", function (req, res) {
     if (req.session.uid) {
@@ -60,25 +75,25 @@ app.get("/login.html", function (req, res) {
     }
 });
 
-app.get("/register_patients.html", function(req, res){
-    let role = req.session.role
-    let is_active = true
-    if (role){
-        let roles = role.split(", ")
-        roles.forEach(element => {
-            if (element === "Inactive"){
-                is_active = false
+app.get("/register_patients.html", function (req, res) {
+    let role = req.session.role;
+    let is_active = true;
+    if (role) {
+        let roles = role.split(", ");
+        roles.forEach((element) => {
+            if (element === "Inactive") {
+                is_active = false;
             }
-        });    
-        if(is_active){
-            res.sendFile(__dirname + "/secureFolder/register_patients.html")
-        }else {
-        res.sendStatus(403)
+        });
+        if (is_active) {
+            res.sendFile(__dirname + "/secureFolder/register_patients.html");
+        } else {
+            res.sendStatus(403);
         }
     } else {
-        res.sendStatus(401)
+        res.sendStatus(401);
     }
-})
+});
 
 app.get("/register.html", function (req, res) {
     if ((req.session.role, req.session.uid)) {
@@ -184,7 +199,8 @@ GET patient info
 select p."name" , p."class" ,p.pre_diseases  from patients p where pid = $1;
 
 GET Gerneral patient info
-select p."name" , p."class" ,p.pid  from patients p;  
+'select p."name" , p."class" ,p.pid  from patients p limit 10 offset $1;'
+  
 
 */
 
@@ -207,8 +223,10 @@ app.get("/data/patient", function (req, res) {
                 }
             );
         } else if (pat_get_inf) {
+            let offset = req.query.offset;
             pool.query(
-                'select p."name" , p."class" ,p.pid  from patients p;',
+                'select p."name" , p."class" ,p.pid  from patients p offset $1;',
+                [offset],
                 (err, resp) => {
                     if (err) {
                         res.sendStatus(500);
@@ -243,16 +261,16 @@ app.get("/data/count/patient", function (req, res) {
 */
 
 app.post("/data/patients", function (req, res) {
-    console.log("HELP ME ")
+    console.log("HELP ME ");
     let role = req.session.role;
     let is_user = false;
     let array_role = role.split(", ");
     let name = req.body.name;
     let p_class = req.body.p_class;
     let birth_day = req.body.birth_day;
-    birth_day = new Date(birth_day)
+    birth_day = new Date(birth_day);
     let pre_diseases = req.body.pre_diseases;
-    console.log(is_user, name, p_class, birth_day, pre_diseases)
+    console.log(is_user, name, p_class, birth_day, pre_diseases);
     array_role.forEach((element) => {
         if (element === "User") {
             is_user = true;
@@ -264,16 +282,16 @@ app.post("/data/patients", function (req, res) {
             [name, p_class, birth_day, pre_diseases],
             (err, resp) => {
                 if (err) {
-                    console.log(err)
+                    console.log(err);
                     res.sendStatus(500);
                 } else {
                     res.sendStatus(201);
                 }
             }
         );
-    }else {
-        res.sendStatus(400)
-        console.log(is_user, name, p_class, birth_day, pre_diseases)
+    } else {
+        res.sendStatus(400);
+        console.log(is_user, name, p_class, birth_day, pre_diseases);
     }
 });
 
@@ -498,9 +516,9 @@ const server = app.listen(8080, function () {
     console.log("Example app listening at http://%s:%s", host, port);
 });
 
-//TODO Add protocol + add patients interface
 // TODO Add user settings with picture upload!
-//TODO Delete Register and make it viewable only for Admins (over the user tab)!
-// TODO Change klasse from patients to be undynamic for the protocols
 
-/*TODO Add sides for users (DONE), patients (DONE), and protocols */
+// TODO Sprache vereinheitlichen
+
+// TODO Change klasse from patients to be undynamic for the protocols
+// TODO protokolle darstellen und einlösen

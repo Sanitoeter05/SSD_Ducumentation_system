@@ -58,7 +58,7 @@ function redirect(param) {
     if (param === "sanis") {
         window.location.href = "/sanis.html";
     } else if (param === "protocols") {
-        window.location.href = "/protocolos.html";
+        window.location.href = "/protocol.html";
     } else if (param === "patients") {
         window.location.href = "/patients.html";
     }

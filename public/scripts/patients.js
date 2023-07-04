@@ -1,7 +1,13 @@
-fetch("/data/patient?pat_get_inf=1").then(results => results.json()).then(reslult =>{
+fetch("/data/patient?pat_get_inf=1&offset=0").then(results => results.json()).then(reslult =>{
+    add_table(reslult)
+})
+
+
+function add_table(data){
     let counter = 1
     let t_body = document.getElementById("t_body")
-    reslult.forEach(entry => {
+    t_body.innerHTML = ""
+    data.forEach(entry => {
         let tr = document.createElement("tr")        
         let th = document.createElement("th")
         let td = document.createElement("td")
@@ -38,9 +44,10 @@ fetch("/data/patient?pat_get_inf=1").then(results => results.json()).then(reslul
         tr.appendChild(td3)
         t_body.appendChild(tr)
     });
-})
+}
 
 
+fetch("")
 
 function get_inf(pid){
     let modal_head = document.getElementById("modal_head")
@@ -51,18 +58,20 @@ function get_inf(pid){
         let name = result[0].name
         let klasse = result[0].class
         let pre_diseases = result[0].pre_diseases
+    
         
+
         let modal_head_text = document.createTextNode(name)
         let modal_body_class_text = document.createTextNode(klasse)
         let modal_body_prediseases_text = document.createTextNode(pre_diseases)
-        
-         
         modal_head.appendChild(modal_head_text)
         modal_body_class.appendChild(modal_body_class_text)
         modal_body_prediseases.appendChild(modal_body_prediseases_text)
-
     })
 }
+
+
+
 function cleanup(){
     let modal_head = document.getElementById("modal_head")
     let modal_body_class = document.getElementById("class")
