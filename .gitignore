@@ -1,3 +1,5 @@
 /node_modules
 .env
 test.js
+/public/scripts/test.js
+/public/test.html

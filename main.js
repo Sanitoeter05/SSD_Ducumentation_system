@@ -60,6 +60,26 @@ app.get("/login.html", function (req, res) {
     }
 });
 
+app.get("/register_patients.html", function(req, res){
+    let role = req.session.role
+    let is_active = true
+    if (role){
+        let roles = role.split(", ")
+        roles.forEach(element => {
+            if (element === "Inactive"){
+                is_active = false
+            }
+        });    
+        if(is_active){
+            res.sendFile(__dirname + "/secureFolder/register_patients.html")
+        }else {
+        res.sendStatus(403)
+        }
+    } else {
+        res.sendStatus(401)
+    }
+})
+
 app.get("/register.html", function (req, res) {
     if ((req.session.role, req.session.uid)) {
         let veryfied = false;
@@ -221,6 +241,41 @@ app.get("/data/count/patient", function (req, res) {
 /*query for adding new patients 
 
 */
+
+app.post("/data/patients", function (req, res) {
+    console.log("HELP ME ")
+    let role = req.session.role;
+    let is_user = false;
+    let array_role = role.split(", ");
+    let name = req.body.name;
+    let p_class = req.body.p_class;
+    let birth_day = req.body.birth_day;
+    birth_day = new Date(birth_day)
+    let pre_diseases = req.body.pre_diseases;
+    console.log(is_user, name, p_class, birth_day, pre_diseases)
+    array_role.forEach((element) => {
+        if (element === "User") {
+            is_user = true;
+        }
+    });
+    if ((is_user, name, p_class, birth_day, pre_diseases)) {
+        pool.query(
+            `INSERT INTO public.patients ("name", "class", bith_date, pre_diseases)VALUES($1, $2, $3, $4);`,
+            [name, p_class, birth_day, pre_diseases],
+            (err, resp) => {
+                if (err) {
+                    console.log(err)
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(201);
+                }
+            }
+        );
+    }else {
+        res.sendStatus(400)
+        console.log(is_user, name, p_class, birth_day, pre_diseases)
+    }
+});
 
 /*
 Query to get full user information

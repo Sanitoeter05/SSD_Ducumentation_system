@@ -72,67 +72,59 @@
                 </div>
             </div>
         </nav>
-        <div id="add_user">
+        <div id="add_patient">
             <main class="text-center p-5">
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">name</th>
-                            <th scope="col">klasse</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="t_body"></tbody>
-                </table>
-                <button type="button" class="btn btn-primary" onclick="window.location = 'register_patients.html'"> register a new patient!</button>
-            </main>
-        </div>
-        <!-- The Modal -->
-        <div
-            class="modal fade"
-            id="myModal"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabindex="-1"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <!-- Modal Header -->
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="modal_head"></h4>
+                <main class="text-center p-5 rounded">
+                    <form
+                        name="register_form"
+                        style="max-width: 400px; margin: auto"
+                    >
+                        <img
+                            src="design/icons/person-square.svg"
+                            class="mt-4 mb-4"
+                            height="72"
+                            alt="user logo"
+                        />
+                        <h1 class="h3 mb-3 font-weight-normal">
+                            registrate a patient!
+                        </h1>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-control mb-1"
+                            placeholder="Name"
+                        />
+                        <input
+                            type="text"
+                            id="klasse"
+                            name="klasse"
+                            class="form-control mb-1"
+                            placeholder="klasse"
+                        />
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            class="form-control mb-1"
+                            placeholder="birth date"
+                        />
+                        <textarea class="form-control" rows="5" id="Prediseases"></textarea>
                         <button
                             type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            onclick="cleanup()"
-                        ></button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body" id="modal_body">
-                        <div>
-                            <p class="text-decoration-underline">Klasse:</p>
-                            <p id="class"></p>
-                        </div>
-                        <div>
-                            <p class="text-decoration-underline">
-                                Vorerkrankung:
-                            </p>
-                            <p id="prediseases"></p>
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div class="modal-footer"></div>
-                </div>
-            </div>
+                            class="btn btn-lg btn-primary btn-block"
+                            onclick="send_data()"
+                        >
+                            submit
+                        </button>
+                    </form>
+                    <div id="UFeedback"></div>
+                </main>
+            </main>
         </div>
     </body>
     <script src="scripts/check.js"></script>
-    <script src="scripts/patients.js"></script>
+    <script src="scripts/register_patients.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
