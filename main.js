@@ -507,6 +507,52 @@ app.get("/data/roles", function (req, res) {
     }
 });
 
+/* Database CLEANUP 
+
+    GET deletable databaseentrys
+    select * from protocols p where date < current_date - interval '10 years';
+*/
+
+app.get("/data/cleanup", function(req,res){
+    let uid = req.session.uid
+    let roles = req.session.roles
+    let is_admin = false
+
+    if (is_admin === true, uid) {
+        pool.query("select * from protocols p where date < current_date - interval '10 years';", (err, resp) => {
+            if(err){
+                res.sendStatus(500)
+                console.log(err)
+            } else {
+                res.send(resp).status(200)
+            }
+        })
+    }
+})
+
+app.delete("/data/cleanup", function(req,res){
+    let uid = req.session.uid
+    let roles = req.session.roles
+    let is_admin= false
+
+    let what = req.body.what
+
+    if (is_admin, uid){
+        if (!isNaN(what)){
+            pool.query("delete * from protocols where protocol_id = $1;", [what], (erro, resp)=>{
+                if (erro){
+                    res.sendStatus(500)
+                    console.log(erro)
+                }else{
+                    res.sendStatus(204)
+                }
+            })
+        } else  if (what === "ALL"){
+            //TODO add DELETE all wheere DATE <= now-10
+        }
+    }
+})
+
 const server = app.listen(8080, function () {
     let host = server.address().address;
     let port = server.address().port;
