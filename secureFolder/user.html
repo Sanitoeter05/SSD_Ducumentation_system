@@ -72,6 +72,55 @@
                 </div>
             </div>
         </nav>
+        <main class="text-center p-5">
+            <img src="/design/icons/person-square.svg" alt="picture">
+            <p id="name"></p>
+            <p id="email"></p>
+            <p id="birthday"></p>
+            <p id="roles"></p>
+        </main>
+        <!-- The Modal -->
+        <div
+            class="modal fade"
+            id="myModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modal_head"></h4>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            onclick="cleanup()"
+                        ></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" id="modal_body">
+                        <div>
+                            <p class="text-decoration-underline">Klasse:</p>
+                            <p id="class"></p>
+                        </div>
+                        <div>
+                            <p class="text-decoration-underline">
+                                Vorerkrankung:
+                            </p>
+                            <p id="prediseases"></p>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer"></div>
+                </div>
+            </div>
+        </div>
     </body>
     <script src="scripts/check.js"></script>
     <script src="scripts/user.js"></script>

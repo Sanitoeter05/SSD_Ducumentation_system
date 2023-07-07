@@ -261,7 +261,6 @@ app.get("/data/count/patient", function (req, res) {
 */
 
 app.post("/data/patients", function (req, res) {
-    console.log("HELP ME ");
     let role = req.session.role;
     let is_user = false;
     let array_role = role.split(", ");
@@ -270,7 +269,6 @@ app.post("/data/patients", function (req, res) {
     let birth_day = req.body.birth_day;
     birth_day = new Date(birth_day);
     let pre_diseases = req.body.pre_diseases;
-    console.log(is_user, name, p_class, birth_day, pre_diseases);
     array_role.forEach((element) => {
         if (element === "User") {
             is_user = true;
@@ -479,7 +477,7 @@ app.get("/get_current_user_inf", function (req, res) {
     let u_name = req.session.u_name;
     let u_role = req.session.role;
     if ((uid, u_name, u_role)) {
-        res.send({ uid: uid, u_name: u_name, u_role: u_role }).status(200);
+        res.send({ "uid": uid, "u_name": u_name, "u_role": u_role }).status(200);
     } else {
         res.send({ uid: "", u_name: "" });
     }
@@ -516,9 +514,10 @@ const server = app.listen(8080, function () {
     console.log("Example app listening at http://%s:%s", host, port);
 });
 
-// TODO Add user settings with picture upload!
+// TODO Add user settings!
 
 // TODO Sprache vereinheitlichen
 
 // TODO Change klasse from patients to be undynamic for the protocols
-// TODO protokolle darstellen und einlösen
+
+// TODO protokolle darstellen und einlesen
